@@ -23,28 +23,21 @@ app.get('/', (req, res) => {
     res.send('Working');
 })
 
-let senderId, recipientId, message, userType, sessionId,session;
+let senderId, recipientId, message, userType, sessionId, session;
 const sessionIdToSocketIdMap = new Map();
 io.on('connection', (socket) => {
 
-    sessionId = Math.random().toString(36).substring(7);
-    socket.sessionId = sessionId
-    sessionIdToSocketIdMap.set(sessionId, socket.id);
-    socket.emit('handshake', sessionId);
-
     socket.on('privateMessage', async (data) => {
-        // let recipientSocketId = '';
+        let recipientSocketId = '';
         senderId = data.senderId;
         recipientId = data.recipientId;
         message = data.message;
         userType = data.userType;
         session = data.session
 
-        const recipientSessionId = await userRoute.getUser(recipientId)
-        const recipientSocketId = sessionIdToSocketIdMap.get(recipientSessionId);
+        recipientSocketId = await userRoute.getUser(recipientId)
 
-        console.log(recipientSocketId);
-        if (recipientSocketId) {
+        if (recipientSocketId.length !== 0) {
 
             io.to(recipientSocketId).emit('privateMessage', `${message}`)
             console.log('emitted and pushing to db');
@@ -59,7 +52,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', async () => {
-        sessionIdToSocketIdMap.delete(socket.session);
+        
         console.log('a user disconnected!');
     });
 });
