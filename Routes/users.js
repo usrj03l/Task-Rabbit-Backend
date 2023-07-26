@@ -68,11 +68,6 @@ router
 async function getUser(uid) {
     let recipientSocketId;
     const user = await User.find({ uid: uid })
-    // .then(data => {
-    //     recipientSocketId = data[0].socketId;
-    // })
-
-
     return user[0].socketId;
 }
 

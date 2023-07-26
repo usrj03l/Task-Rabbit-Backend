@@ -24,7 +24,6 @@ app.get('/', (req, res) => {
 })
 
 let senderId, recipientId, message, userType, sessionId, session;
-const sessionIdToSocketIdMap = new Map();
 io.on('connection', (socket) => {
 
     socket.on('privateMessage', async (data) => {
