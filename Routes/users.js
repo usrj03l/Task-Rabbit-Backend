@@ -39,9 +39,13 @@ const User = mongoose.model('user', userSchema);
 const Message = mongoose.model('message', messageListSchema);
 
 router
+    .get('/:id', async (req, res) => {
+        const id = req.params.id;
+        res.send(await User.exists({ uid: id }))
+    })
     .post('/getUsers', async (req, res) => {
         const users = req.body.users;
-        res.send(await User.find({uid: users}));
+        res.send(await User.find({ uid: users }));
     })
     .post('/add', async (req, res) => {
         const data = req.body;
