@@ -39,8 +39,9 @@ const User = mongoose.model('user', userSchema);
 const Message = mongoose.model('message', messageListSchema);
 
 router
-    .get('/getUsers', async (req, res) => {
-        res.send(await User.find({}));
+    .post('/getUsers', async (req, res) => {
+        const users = req.body.users;
+        res.send(await User.find({uid: users}));
     })
     .post('/add', async (req, res) => {
         const data = req.body;
@@ -58,14 +59,18 @@ router
         const uid = req.body.uid;
         await User.findOneAndUpdate({ uid: uid }, { $set: { socketId: '' } });
     })
+    .post('/getMessages', async (req, res) => {
+        const uid = req.body.uid;
+        res.send(await Message.findOne({ uid: uid }));
+    })
 
 
 async function getUser(uid) {
     let recipientSocketId;
     const user = await User.find({ uid: uid })
-        // .then(data => {
-        //     recipientSocketId = data[0].socketId;
-        // })
+    // .then(data => {
+    //     recipientSocketId = data[0].socketId;
+    // })
 
 
     return user[0].socketId;
@@ -93,7 +98,7 @@ async function setMessage(sender, recipient, message, messageType) {
             existingList.messages[receiverIndex].messageList.push(msg);
         } else {
             existingList.messages.push({
-                receiverUid:recipient,
+                receiverUid: recipient,
                 messageList: [msg]
             });
         }

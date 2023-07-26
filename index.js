@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
 
         if (recipientSocketId.length !== 0) {
 
-            io.to(recipientSocketId).emit('privateMessage', `${message}`)
+            io.to(recipientSocketId).emit('privateMessage', { 'message': message, 'messageType': 'received', 'sender': senderId });
             console.log('emitted and pushing to db');
 
             userRoute.setMessage(senderId, recipientId, message, 'sent');
@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', async () => {
-        
+
         console.log('a user disconnected!');
     });
 });
