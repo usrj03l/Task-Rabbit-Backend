@@ -52,7 +52,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', async () => {
-
         console.log('a user disconnected!');
     });
 });
