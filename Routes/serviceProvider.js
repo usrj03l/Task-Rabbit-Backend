@@ -13,7 +13,7 @@ const serviceSchema = new mongoose.Schema({
     city: String,
     state: String,
     uid: String,
-    image: String,
+    expCertificate: String,
     serviceType: String,
     socketId: String
 });
@@ -47,7 +47,7 @@ router
             city,
             state,
             uid,
-            image: imageFile,
+            expCertificate: imageFile,
             serviceType,
             socketId: ''
         }).save();
