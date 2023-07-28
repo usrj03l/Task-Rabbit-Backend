@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const router = express.Router();
 const multer = require('multer');
+const router = express.Router();
+
 
 const serviceSchema = new mongoose.Schema({
     fname: String,
@@ -16,7 +17,8 @@ const serviceSchema = new mongoose.Schema({
     expCertificate: String,
     serviceType: String,
     socketId: String,
-    profilePic: String
+    profilePic: String,
+    bio: String
 });
 
 const Service = mongoose.model('service', serviceSchema);
@@ -33,8 +35,11 @@ const multerStorage = multer.diskStorage({
 
 const upload = multer({ storage: multerStorage });
 
-// Handle the form submission
 router
+    .get('/getUser/:id', async (req, res) => {
+        const id = req.params.id;
+        res.send(await Service.findOne({ uid: id }));
+    })
     .post('/add', upload.single('image'), (req, res) => {
         const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType } = req.body;
         const imageFile = req.file.path;
@@ -71,11 +76,9 @@ router
         const doc = await Service.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
         res.json(doc.profilePic.split('\\').pop());
     })
-    .get('/getPic', (res, req) => {
-
+    .post('/setBio', async (req, res) => {
+        const { bio, uid } = req.body;
+        const doc = await Service.findOneAndUpdate({ uid: uid }, { bio: bio });
     })
-
-
-
 
 module.exports = router;

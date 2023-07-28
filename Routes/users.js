@@ -1,12 +1,24 @@
 const mongoose = require('mongoose');
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/provider");
+    },
+    filename: (req, file, cb) => {
+        const ext = file.mimetype.split("/")[1];
+        cb(null, `files/admin-${file.fieldname}-${Date.now()}.${ext}`);
+    },
+});
+
+const upload = multer({ storage: multerStorage });
 
 const userSchema = new mongoose.Schema({
     uid: String,
     fname: String,
-    lanme: String,
+    lname: String,
     email: String,
     phone: Number,
     street: String,
@@ -14,7 +26,8 @@ const userSchema = new mongoose.Schema({
     city: String,
     state: String,
     zip: Number,
-    socketId: String
+    socketId: String,
+    profilePic:String
 });
 
 const messageSchema = new mongoose.Schema({
@@ -67,6 +80,13 @@ router
         const uid = req.body.uid;
         res.send(await Message.findOne({ uid: uid }));
     })
+    .post('/profilePic', upload.single('image'), async (req, res) => {
+        const { uid } = req.body;
+        const newProfilePic = req.file.path;
+        console.log(newProfilePic,'-->',uid);
+        const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
+        res.json(doc.profilePic.split('\\').pop());
+    })
 
 
 async function getUser(uid) {
@@ -88,9 +108,7 @@ async function setMessage(sender, recipient, message, messageType) {
     }
 
     try {
-
         const existingList = await Message.findOne({ uid: sender }).orFail();
-
         const receiverIndex = existingList.messages.findIndex(entry => entry.receiverUid === recipient)
 
         if (receiverIndex !== -1) {
@@ -101,11 +119,8 @@ async function setMessage(sender, recipient, message, messageType) {
                 messageList: [msg]
             });
         }
-
         existingList.save();
-
     } catch (err) {
-
         new Message({
             uid: sender,
             messages:
@@ -113,9 +128,7 @@ async function setMessage(sender, recipient, message, messageType) {
                 receiverUid: recipient,
                 messageList: [msg]
             }
-
         }).save();
-
     }
 }
 
