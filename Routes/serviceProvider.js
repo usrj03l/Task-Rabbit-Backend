@@ -15,7 +15,8 @@ const serviceSchema = new mongoose.Schema({
     uid: String,
     expCertificate: String,
     serviceType: String,
-    socketId: String
+    socketId: String,
+    profilePic: String
 });
 
 const Service = mongoose.model('service', serviceSchema);
@@ -64,6 +65,16 @@ router
         const uid = req.body.uid;
         await Service.findOneAndUpdate({ uid: uid }, { $set: { socketId: '' } });
     })
+    .post('/profilePic', upload.single('image'), async (req, res) => {
+        const { uid } = req.body;
+        const newProfilePic = req.file.path;
+        const doc = await Service.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
+        res.json(doc.profilePic.split('\\').pop());
+    })
+    .get('/getPic', (res, req) => {
+
+    })
+
 
 
 

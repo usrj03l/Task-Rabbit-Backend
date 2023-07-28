@@ -18,6 +18,7 @@ const serviceRoute = require('./Routes/serviceProvider');
 
 app.use('/user', userRoute.route);
 app.use('/provider', serviceRoute);
+app.use('/images', express.static('public/provider/files'));
 
 app.get('/', (req, res) => {
     res.send('Working');
