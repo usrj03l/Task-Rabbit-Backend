@@ -68,7 +68,6 @@ router
 
         if (serviceType) {
             const regex = new RegExp(serviceType, 'i')
-            
             pipeline.push({
                 $match: {
                     serviceType: regex
