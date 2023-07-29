@@ -40,6 +40,52 @@ router
         const id = req.params.id;
         res.send(await Service.findOne({ uid: id }));
     })
+    .get('/search', async (req, res) => {
+        const { q, city, serviceType } = req.query;
+        const pipeline = [];
+
+        if (q) {
+            const regex = new RegExp(q, 'i');
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { orgName: regex },
+                        { fname: regex },
+                        { lname: regex }
+                    ]
+                }
+            });
+        }
+
+        if (city) {
+            const regex = new RegExp(city, 'i')
+            pipeline.push({
+                $match: {
+                    city: regex
+                }
+            });
+        }
+
+        if (serviceType) {
+            const regex = new RegExp(serviceType, 'i')
+            
+            pipeline.push({
+                $match: {
+                    serviceType: regex
+                }
+            });
+        }
+
+        if (pipeline.length > 0) {
+            const providers = await Service.aggregate(pipeline);
+            res.send(providers);
+        }else{
+            res.json('No docs');
+        }
+
+
+
+    })
     .post('/add', upload.single('image'), (req, res) => {
         const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType } = req.body;
         const imageFile = req.file.path;
