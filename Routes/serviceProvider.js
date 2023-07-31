@@ -1,39 +1,8 @@
-const mongoose = require('mongoose');
 const express = require('express');
-const multer = require('multer');
 const router = express.Router();
 
-
-const serviceSchema = new mongoose.Schema({
-    fname: String,
-    lname: String,
-    email: String,
-    phone: Number,
-    pan: String,
-    aadhar: String,
-    city: String,
-    state: String,
-    uid: String,
-    expCertificate: String,
-    serviceType: String,
-    socketId: String,
-    profilePic: String,
-    bio: String
-});
-
-const Service = mongoose.model('service', serviceSchema);
-
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/provider");
-    },
-    filename: (req, file, cb) => {
-        const ext = file.mimetype.split("/")[1];
-        cb(null, `files/admin-${file.fieldname}-${Date.now()}.${ext}`);
-    },
-});
-
-const upload = multer({ storage: multerStorage });
+const Service = require('../models/Service');
+const upload = require('../models/multer');
 
 router
     .get('/getUser/:id', async (req, res) => {
@@ -81,9 +50,6 @@ router
         }else{
             res.json('No docs');
         }
-
-
-
     })
     .post('/add', upload.single('image'), (req, res) => {
         const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType } = req.body;

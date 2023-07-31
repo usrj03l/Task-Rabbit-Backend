@@ -1,55 +1,10 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const multer = require('multer');
 const router = express.Router();
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/provider");
-    },
-    filename: (req, file, cb) => {
-        const ext = file.mimetype.split("/")[1];
-        cb(null, `files/admin-${file.fieldname}-${Date.now()}.${ext}`);
-    },
-});
-
-const upload = multer({ storage: multerStorage });
-
-const userSchema = new mongoose.Schema({
-    uid: String,
-    fname: String,
-    lname: String,
-    email: String,
-    phone: Number,
-    street: String,
-    street2: String,
-    city: String,
-    state: String,
-    zip: Number,
-    socketId: String,
-    profilePic:String
-});
-
-const messageSchema = new mongoose.Schema({
-    message: String,
-    date: String,
-    time: String,
-    messageType: String
-})
-
-const messageListSchema = new mongoose.Schema({
-    uid: String,
-    messages: [
-        {
-            receiverUid: String,
-            messageList: [messageSchema]
-
-        }
-    ]
-})
-
-const User = mongoose.model('user', userSchema);
-const Message = mongoose.model('message', messageListSchema);
+const upload = require('../models/multer');
+const User = require('../models/User');
+const Message = require('../models/Message');
 
 router
     .get('/:id', async (req, res) => {

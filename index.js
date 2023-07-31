@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
     res.send('Working');
 })
 
-let senderId, recipientId, message, userType, sessionId, session;
+let senderId, recipientId, message, userType, session;
 io.on('connection', (socket) => {
 
     socket.on('privateMessage', async (data) => {
