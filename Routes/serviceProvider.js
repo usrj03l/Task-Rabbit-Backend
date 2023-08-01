@@ -52,7 +52,7 @@ router
         }
     })
     .post('/add', upload.single('image'), (req, res) => {
-        const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType } = req.body;
+        const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType,orgName } = req.body;
         const imageFile = req.file.path;
         new Service({
             fname,
@@ -66,7 +66,8 @@ router
             uid,
             expCertificate: imageFile,
             serviceType,
-            socketId: ''
+            socketId: '',
+            orgName
         }).save();
 
         res.status(200).json({ message: 'Form submitted successfully' });
