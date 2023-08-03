@@ -43,7 +43,6 @@ router
         res.json(doc.profilePic.split('\\').pop());
     })
 
-
 async function getUser(uid) {
     let recipientSocketId;
     const user = await User.find({ uid: uid })
