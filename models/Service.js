@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const orgSchema = new mongoose.Schema({
     totalRating:Number,
     totalRatingCount:Number,
-    establishmentYear:Number,
-    timings:String,
+    openTime:String,
+    closeTime:String,
     reviews:[
         {
             uid:String,
@@ -16,13 +16,13 @@ const orgSchema = new mongoose.Schema({
     aboutUs:[
         {
             title:String,
-            description:String
+            content:String
         }
     ],
     fQuestions:[
         {
-            title:String,
-            description:String
+            question:String,
+            answer:String
         }
     ]
 });
@@ -43,7 +43,9 @@ const serviceSchema = new mongoose.Schema({
     profilePic: String,
     orgName: String,
     bio:String,
-    orgDetails: orgSchema
+    orgDetails: orgSchema,
+    establishmentYear:String,
+    approval:Boolean
 });
 
 

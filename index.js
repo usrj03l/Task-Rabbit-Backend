@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
         userType = data.userType;
         session = data.session
 
-        recipientSocketId = await userRoute.getUser(recipientId)
+        recipientSocketId = await userRoute.getUserS(recipientId)
 
         if (recipientSocketId.length !== 0) {
 
