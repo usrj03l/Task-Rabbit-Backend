@@ -94,13 +94,16 @@ router
             'orgDetails.openTime': openTime,
             'orgDetails.closeTime': closeTime,
         }
+
         const pushOperations = [];
         if (aboutUs && aboutUs.length > 0) {
             pushOperations.push({ 'orgDetails.aboutUs': { $each: aboutUs } });
         }
+
         if (fQues && fQues.length > 0) {
             pushOperations.push({ 'orgDetails.fQuestions': { $each: fQues } });
         }
+        
         if (pushOperations.length > 0) {
             updateObject.$push = pushOperations.reduce((acc, curr) => Object.assign(acc, curr), {});
         }

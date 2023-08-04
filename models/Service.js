@@ -1,18 +1,8 @@
 const mongoose = require('mongoose');
 
 const orgSchema = new mongoose.Schema({
-    totalRating:Number,
-    totalRatingCount:Number,
     openTime:String,
     closeTime:String,
-    reviews:[
-        {
-            uid:String,
-            time:String,
-            userRating:Number,
-            review:String
-        }
-    ],
     aboutUs:[
         {
             title:String,
