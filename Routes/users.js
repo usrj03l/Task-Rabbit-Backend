@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
@@ -62,18 +61,18 @@ async function setMessage(sender, recipient, message, messageType) {
     }
 
     try {
-        const existingList = await Message.findOne({ uid: sender }).orFail();
-        const receiverIndex = existingList.messages.findIndex(entry => entry.receiverUid === recipient)
+        const existingMessageList = await Message.findOne({ uid: sender }).orFail();
+        const receiverIndex = existingMessageList.messages.findIndex(entry => entry.receiverUid === recipient)
 
         if (receiverIndex !== -1) {
-            existingList.messages[receiverIndex].messageList.push(msg);
+            existingMessageList.messages[receiverIndex].messageList.push(msg);
         } else {
-            existingList.messages.push({
+            existingMessageList.messages.push({
                 receiverUid: recipient,
                 messageList: [msg]
             });
         }
-        existingList.save();
+        existingMessageList.save();
     } catch (err) {
         new Message({
             uid: sender,
