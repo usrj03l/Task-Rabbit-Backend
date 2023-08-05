@@ -6,6 +6,7 @@ const reviewSchema = new mongoose.Schema({
     uid: String,
     reviewList: [
         {
+            name:String,
             reviewerId: String,
             profilePic: String,
             reviewDate: String,

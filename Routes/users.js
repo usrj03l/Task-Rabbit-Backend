@@ -37,7 +37,6 @@ router
     .post('/profilePic', upload.single('image'), async (req, res) => {
         const { uid } = req.body;
         const newProfilePic = req.file.path;
-        console.log(newProfilePic,'-->',uid);
         const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
         res.json(doc.profilePic.split('\\').pop());
     })
