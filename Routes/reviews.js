@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const Review = require('../models/Reviews');
 
 router
@@ -37,7 +36,7 @@ async function setReview(reviewData) {
         if (reviewerIndex === -1) {
              newTotalRating = ((previousTotalRating * totalRatingCount) + rating) / (totalRatingCount + 1);
              existingReviewsList.totalRatingCount += 1;
-            existingReviewsList.reviewList.push(reviewMessage);
+             existingReviewsList.reviewList.push(reviewMessage);
         } else {
             const previousRating = existingReviewsList.reviewList[reviewerIndex].userRating;
             newTotalRating = ((previousTotalRating * totalRatingCount) - previousRating + rating) / totalRatingCount;
