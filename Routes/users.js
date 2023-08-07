@@ -36,9 +36,8 @@ router
     })
     .post('/profilePic', upload.single('image'), async (req, res) => {
         const { uid } = req.body;
-        const newProfilePic = req.file.path;
+        const newProfilePic = req.file.path.split('\\').pop();
         const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
-        res.json(doc.profilePic.split('\\').pop());
     })
 
 async function getUser(uid) {
