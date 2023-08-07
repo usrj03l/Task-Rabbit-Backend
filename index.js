@@ -16,10 +16,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/taskRabbit');
 const userRoute = require('./Routes/users');
 const serviceRoute = require('./Routes/serviceProvider');
 const reviewsRoute = require('./Routes/reviews');
+const appointmentsRoute = require('./Routes/appointments');
 
 app.use('/user', userRoute.route);
 app.use('/provider', serviceRoute);
 app.use('/review',reviewsRoute)
+app.use('/appointment',appointmentsRoute);
 app.use('/images', express.static('public/provider/files'));
 
 app.get('/', (req, res) => {
