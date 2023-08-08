@@ -3,7 +3,6 @@ const router = express.Router();
 
 const Service = require('../models/Service');
 const upload = require('../models/multer');
-const User = require('../models/User');
 
 router
     .get('/getUser/:id', async (req, res) => {
@@ -109,7 +108,6 @@ router
         }
 
         await Service.findOneAndUpdate({ uid: id }, updateObject, { new: true })
-            .then(data => console.log(data))
     })
     .post('/setSocket', async (req, res) => {
         const uid = req.body.id

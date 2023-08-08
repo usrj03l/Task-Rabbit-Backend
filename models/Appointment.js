@@ -2,15 +2,18 @@ const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
     uid: String,
+    providerName:String,
     userDetails: [
         {
             userUid: String,
             name: String,
+            profilePic: String,
             booked: Boolean,
+            date: String,
             time: String,
             address: String,
-            completed:Boolean,
-            cancelled:Boolean
+            completed: Boolean,
+            cancelled: Boolean
         }
     ]
 })
