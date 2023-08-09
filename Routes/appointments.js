@@ -7,15 +7,42 @@ router
         const uid = req.query.id;
         const userUid = req.query.userUid;
         let appointmentsData;
-        
-        if(userUid){
-            appointmentsData = await Appointment.find({ "userDetails.userUid": userUid });
-        }else{
-             appointmentsData = await Appointment.findOne({ uid: uid });
+
+        if (userUid) {
+            try {
+                const appointmentsData = await Appointment.aggregate([
+                    {
+                        $match: { "userDetails.userUid": userUid }
+                    },
+                    {
+                        $project: {
+                            uid: 1,
+                            providerName: 1,
+                            userDetails: {
+                                $filter: {
+                                    input: '$userDetails',
+                                    as: 'userDetail',
+                                    cond: { $eq: ['$$userDetail.userUid', userUid] } 
+                                }
+                            }
+                        }
+                    }
+                ]);
+                if (appointmentsData.length > 0) {
+                    return res.send(appointmentsData);
+                } else {
+                    return res.send(null);
+                }
+            } catch (error) {
+                console.error(error);
+                return res.status(500).send('Internal Server Error');
+            }
+        } else {
+            appointmentsData = await Appointment.findOne({ uid: uid });
         }
 
         if (appointmentsData) {
-            return res.send(appointmentsData)
+            return res.send(appointmentsData);
         } else {
             return res.send(null);
         }
@@ -23,11 +50,11 @@ router
     })
     .post('/bookAppointment', async (req, res) => {
         const uid = req.body.id;
-        const {providerName,...userInfo} = req.body.appointmentData;
+        const { providerName, ...userInfo } = req.body.appointmentData;
 
         try {
             const existingAppointment = await Appointment.findOne({ uid: uid }).orFail();
-            const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userInfo.userUid)
+            const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userInfo.userUid);
 
             if (userIndex === -1) {
                 existingAppointment.userDetails.push(userInfo);
@@ -39,7 +66,7 @@ router
 
             new Appointment({
                 uid: uid,
-                providerName:providerName,
+                providerName: providerName,
                 userDetails: [userInfo]
             }).save();
         }
@@ -49,16 +76,15 @@ router
         const uid = req.body.id;
         const updateObj = req.body.data;
         const userUid = req.body.userUid;
-        
-        const existingAppointment = await Appointment.findOne({ uid: uid });
-        const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userUid)
 
-        if(Object.keys(updateObj)[0] === 'booked'){
+        const existingAppointment = await Appointment.findOne({ uid: uid });
+        const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userUid);
+
+        if (Object.keys(updateObj)[0] === 'booked') {
             existingAppointment.userDetails[userIndex].booked = Object.values(updateObj)[0];
-        }else{
+        } else {
             existingAppointment.userDetails[userIndex].cancelled = Object.values(updateObj)[0];
         }
-       
         existingAppointment.save();
     })
 
