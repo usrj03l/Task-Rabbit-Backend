@@ -35,9 +35,11 @@ router
         res.send(await Message.findOne({ uid: uid }));
     })
     .post('/profilePic', upload.single('image'), async (req, res) => {
+        console.log('1');
         const { uid } = req.body;
         const newProfilePic = req.file.path.split('\\').pop();
-        const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
+        const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { new: true });
+        res.send(doc);
     })
 
 async function getUser(uid) {
