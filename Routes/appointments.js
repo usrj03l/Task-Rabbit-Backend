@@ -8,7 +8,7 @@ router
         const userUid = req.query.userUid;
         let appointmentsData;
 
-        if (userUid.length > 0) {
+        if (userUid) {
             try {
                 const appointmentsData = await Appointment.aggregate([
                     {
@@ -41,7 +41,7 @@ router
             appointmentsData = await Appointment.findOne({ uid: uid });
         }
 
-        if (appointmentsData.length > 0) {
+        if (appointmentsData) {
             return res.send(appointmentsData);
         } else {
             return res.send(null);
@@ -82,8 +82,12 @@ router
 
         if (Object.keys(updateObj)[0] === 'booked') {
             existingAppointment.userDetails[userIndex].booked = Object.values(updateObj)[0];
-        } else {
+        } 
+        if(Object.keys(updateObj)[0] === 'cancelled'){
             existingAppointment.userDetails[userIndex].cancelled = Object.values(updateObj)[0];
+        }
+        if(Object.keys(updateObj)[0] === 'completed'){
+            existingAppointment.userDetails[userIndex].completed = Object.values(updateObj)[0];
         }
         existingAppointment.save();
     })
