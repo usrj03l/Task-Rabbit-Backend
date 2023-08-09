@@ -8,7 +8,7 @@ router
         const userUid = req.query.userUid;
         let appointmentsData;
 
-        if (userUid) {
+        if (userUid.length > 0) {
             try {
                 const appointmentsData = await Appointment.aggregate([
                     {
@@ -41,7 +41,7 @@ router
             appointmentsData = await Appointment.findOne({ uid: uid });
         }
 
-        if (appointmentsData) {
+        if (appointmentsData.length > 0) {
             return res.send(appointmentsData);
         } else {
             return res.send(null);

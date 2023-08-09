@@ -17,16 +17,14 @@ const userRoute = require('./Routes/users');
 const serviceRoute = require('./Routes/serviceProvider');
 const reviewsRoute = require('./Routes/reviews');
 const appointmentsRoute = require('./Routes/appointments');
+const paymentsRoute = require('./Routes/payments');
 
 app.use('/user', userRoute.route);
 app.use('/provider', serviceRoute);
 app.use('/review',reviewsRoute)
 app.use('/appointment',appointmentsRoute);
+app.use('/payment',paymentsRoute);
 app.use('/images', express.static('public/provider/files'));
-
-app.get('/', (req, res) => {
-    res.send('Working');
-})
 
 let senderId, recipientId, message, userType, session;
 io.on('connection', (socket) => {
