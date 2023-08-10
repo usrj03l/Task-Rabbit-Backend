@@ -4,6 +4,39 @@ const Appointment = require('../models/Payment');
 const Payment = require('../models/Payment');
 
 router
+    .get('/getBill', async (req, res) => {
+        const userUid = req.query.id;
+        
+        try {
+            const appointmentsData = await Appointment.aggregate([
+                {
+                    $match: { "bill.userUid": userUid }
+                },
+                {
+                    $project: {
+                        providerUid: 1,
+                        orgName: 1,
+                        bill: {
+                            $filter: {
+                                input: '$bill',
+                                as: 'getBill',
+                                cond: { $eq: ['$$getBill.userUid', userUid] } 
+                            }
+                        }
+                    }
+                }
+            ]);
+            if (appointmentsData.length > 0) {
+                return res.send(appointmentsData);
+            } else {
+                return res.send(null);
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send('Internal Server Error');
+        }
+
+    })
     .post('/addTransaction', async (req, res) => {
         const providerData = req.body.providerData;
         const billData = req.body.generatedBill;
