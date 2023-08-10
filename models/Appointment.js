@@ -12,6 +12,8 @@ const appointmentSchema = new mongoose.Schema({
             date: String,
             time: String,
             address: String,
+            phone:Number,
+            email:String,
             completed: Boolean,
             cancelled: Boolean
         }

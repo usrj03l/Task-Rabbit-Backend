@@ -47,6 +47,7 @@ router
             existingBill.save();
             return res.status(200).json('success');
         } catch (err) {
+            console.log(billData);
             new Payment({
                 providerUid: providerData.uid,
                 orgName: providerData.orgName,
