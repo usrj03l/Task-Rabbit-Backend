@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     state: String,
     zip: Number,
     socketId: String,
-    profilePic:String
+    profilePic:String,
+    userType:String
 });
 
 const User = mongoose.model('user', userSchema);

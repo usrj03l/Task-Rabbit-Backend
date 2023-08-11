@@ -18,15 +18,17 @@ const serviceRoute = require('./Routes/serviceProvider');
 const reviewsRoute = require('./Routes/reviews');
 const appointmentsRoute = require('./Routes/appointments');
 const paymentsRoute = require('./Routes/payments');
+const messagesRoute = require('./Routes/messages');
 
 app.use('/user', userRoute.route);
-app.use('/provider', serviceRoute);
+app.use('/provider', serviceRoute.route);
 app.use('/review',reviewsRoute)
 app.use('/appointment',appointmentsRoute);
 app.use('/payment',paymentsRoute);
+app.use('/message',messagesRoute.route);
 app.use('/images', express.static('public/provider/files'));
 
-let senderId, recipientId, message, userType, session;
+let senderId, recipientId, message, userType;
 io.on('connection', (socket) => {
 
     socket.on('privateMessage', async (data) => {
@@ -35,21 +37,25 @@ io.on('connection', (socket) => {
         recipientId = data.recipientId;
         message = data.message;
         userType = data.userType;
-        session = data.session
+        session = data.session;
 
-        recipientSocketId = await userRoute.getUserS(recipientId)
-
+        console.log(senderId,recipientId);
+        if(userType === 'user'){
+            console.log(userType);
+            recipientSocketId = await userRoute.getUserSocket(recipientId);
+        }else{
+            console.log(userType);
+            recipientSocketId = await serviceRoute.getUserSocket(recipientId);
+        }
+       
         if (recipientSocketId.length !== 0) {
 
             io.to(recipientSocketId).emit('privateMessage', { 'message': message, 'messageType': 'received', 'sender': senderId });
-            console.log('emitted and pushing to db');
-
-            userRoute.setMessage(senderId, recipientId, message, 'sent');
-            userRoute.setMessage(recipientId, senderId, message, 'received');
+            messagesRoute.setMessage(senderId, recipientId, message, 'sent');
+            messagesRoute.setMessage(recipientId, senderId, message, 'received');
         } else {
-            console.log('pushing to DB');
-            userRoute.setMessage(senderId, recipientId, message, 'sent');
-            userRoute.setMessage(recipientId, senderId, message, 'received');
+            messagesRoute.setMessage(senderId, recipientId, message, 'sent');
+            messagesRoute.setMessage(recipientId, senderId, message, 'received');
         }
     });
 
@@ -57,7 +63,6 @@ io.on('connection', (socket) => {
         console.log('a user disconnected!');
     });
 });
-
 
 httpServer.listen(3000, () => {
     console.log('Server started at http://localhost:3000');

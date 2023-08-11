@@ -51,6 +51,10 @@ router
             res.json('No docs');
         }
     })
+    .post('/getUsersList', async (req, res) => {
+        const providers = req.body.users;
+        res.send(await Service.find({ uid: providers }));
+    })
     .post('/add', upload.single('image'), (req, res) => {
         const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType, orgName } = req.body;
         const imageFile = req.file.path;
@@ -68,7 +72,8 @@ router
             serviceType,
             socketId: '',
             orgName,
-            approval: false
+            approval: false,
+            userType:'provider'
         }).save();
         res.status(200).json({ message: 'Form submitted successfully' });
     })
@@ -128,6 +133,14 @@ router
     .post('/setBio', async (req, res) => {
         const { bio, uid } = req.body;
         const doc = await Service.findOneAndUpdate({ uid: uid }, { bio: bio });
-    })
+    });
 
-module.exports = router;
+    async function getUserSocket(uid) {
+        const serviceProvider = await Service.find({ uid: uid })
+        return serviceProvider[0].socketId;
+    }
+
+module.exports = {
+    route:router,
+    getUserSocket:getUserSocket
+};

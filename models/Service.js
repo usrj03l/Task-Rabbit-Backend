@@ -35,7 +35,8 @@ const serviceSchema = new mongoose.Schema({
     bio:String,
     orgDetails: orgSchema,
     establishmentYear:String,
-    approval:Boolean
+    approval:Boolean,
+    userType:String
 });
 
 
