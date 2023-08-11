@@ -39,12 +39,9 @@ io.on('connection', (socket) => {
         userType = data.userType;
         session = data.session;
 
-        console.log(senderId,recipientId);
         if(userType === 'user'){
-            console.log(userType);
             recipientSocketId = await userRoute.getUserSocket(recipientId);
         }else{
-            console.log(userType);
             recipientSocketId = await serviceRoute.getUserSocket(recipientId);
         }
        

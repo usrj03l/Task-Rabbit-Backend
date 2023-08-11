@@ -44,7 +44,6 @@ router
 
 async function getUserSocket(uid) {
     const user = await User.find({ uid: uid })
-    console.log(uid);
     return user[0].socketId;
 }
 
