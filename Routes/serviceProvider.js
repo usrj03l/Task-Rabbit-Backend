@@ -2,12 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 const Service = require('../models/Service');
+const Enquiry = require('../models/Enquiry');
 const upload = require('../models/multer');
-
 router
     .get('/getUser/:id', async (req, res) => {
         const id = req.params.id;
         res.send(await Service.findOne({ uid: id }));
+    })
+    .get('/enquiries', async(req,res)=>{
+        const uid = req.query.id;
+        res.send(await Enquiry.findOne({providerUid:uid}));
     })
     .get('/search', async (req, res) => {
         const { q, city, serviceType } = req.query;
