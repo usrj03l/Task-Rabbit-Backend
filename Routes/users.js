@@ -42,18 +42,19 @@ router
         const doc = await User.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { new: true });
         res.send(doc);
     })
-    .post('/enquire', async(req,res)=>{
+    .post('/enquire', async (req, res) => {
         const providerUid = req.body.id;
         const user = req.body.user;
 
-        try{
-            existingEnquiryList = await Enquiry.findOne({uid:providerUid}).orFail();
+        try {
+            existingEnquiryList = await Enquiry.findOne({ providerUid: providerUid }).orFail();
             existingEnquiryList.enquiredUser.push(user);
             res.status(200).json('success');
-        }catch{
+            existingEnquiryList.save();
+        } catch {
             new Enquiry({
-                providerUid:providerUid,
-                enquiredUser:[user]   
+                providerUid: providerUid,
+                enquiredUser: [user]
             }).save();
             res.status(200).json('success');
         }

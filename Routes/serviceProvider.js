@@ -9,9 +9,21 @@ router
         const id = req.params.id;
         res.send(await Service.findOne({ uid: id }));
     })
-    .get('/enquiries', async(req,res)=>{
+    .get('/enquiries', async (req, res) => {
         const uid = req.query.id;
-        res.send(await Enquiry.findOne({providerUid:uid}));
+        res.send(await Enquiry.findOne({ providerUid: uid }));
+    })
+    .post('/deleteEnquiry', async (req, res) => {
+        const deleteObj = req.body.deleteObj;
+        const newDoc = await Enquiry.findOne({ providerUid: deleteObj.providerUid });
+        index = newDoc.enquiredUser.findIndex(user => user.userUid === deleteObj.userUid);
+        if (index !== -1) {
+            newDoc.enquiredUser.splice(index, 1);
+            newDoc.save();
+            res.send(newDoc);
+        } else {
+            res.send(newDoc);
+        }
     })
     .get('/search', async (req, res) => {
         const { q, city, serviceType } = req.query;
@@ -77,7 +89,7 @@ router
             socketId: '',
             orgName,
             approval: false,
-            userType:'provider'
+            userType: 'provider'
         }).save();
         res.status(200).json({ message: 'Form submitted successfully' });
     })
@@ -111,7 +123,7 @@ router
         if (fQues && fQues.length > 0) {
             pushOperations.push({ 'orgDetails.fQuestions': { $each: fQues } });
         }
-        
+
         if (pushOperations.length > 0) {
             updateObject.$push = pushOperations.reduce((acc, curr) => Object.assign(acc, curr), {});
         }
@@ -139,12 +151,12 @@ router
         const doc = await Service.findOneAndUpdate({ uid: uid }, { bio: bio });
     });
 
-    async function getUserSocket(uid) {
-        const serviceProvider = await Service.find({ uid: uid })
-        return serviceProvider[0].socketId;
-    }
+async function getUserSocket(uid) {
+    const serviceProvider = await Service.find({ uid: uid })
+    return serviceProvider[0].socketId;
+}
 
 module.exports = {
-    route:router,
-    getUserSocket:getUserSocket
+    route: router,
+    getUserSocket: getUserSocket
 };
