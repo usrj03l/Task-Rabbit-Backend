@@ -37,6 +37,15 @@ router
         }
 
     })
+    .get('/getFullTransaction',async(req,res)=>{
+        const providerUid = req.query.id;
+        const data = await Payment.findOne({providerUid:providerUid});
+        if(data){
+            res.send(data);
+        }else{
+            res.send(null);
+        }
+    })
     .post('/addTransaction', async (req, res) => {
         const providerData = req.body.providerData;
         const billData = req.body.generatedBill;
