@@ -56,12 +56,14 @@ router
             const existingAppointment = await Appointment.findOne({ uid: uid }).orFail();
             const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userInfo.userUid);
 
-            if (userIndex === -1) {
+            if (userIndex === -1 || existingAppointment.userDetails[userIndex].completed) {
                 existingAppointment.userDetails.push(userInfo);
                 existingAppointment.save();
-            } else {
+                return res.status(200).json('success');
+            }else{
                 return res.status(200).json('pending');
             }
+
         } catch (error) {
 
             new Appointment({
