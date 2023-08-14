@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     zip: Number,
     socketId: String,
     profilePic:String,
-    userType:String
+    userType:String,
+    disabled:Boolean
 });
 
 const User = mongoose.model('user', userSchema);

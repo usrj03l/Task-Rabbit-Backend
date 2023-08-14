@@ -17,6 +17,8 @@ router
     })
     .post('/add', async (req, res) => {
         const data = req.body;
+        data.userType = 'user';
+        data.disabled = false;
         await new User(data)
             .save();
         return res.json('200');

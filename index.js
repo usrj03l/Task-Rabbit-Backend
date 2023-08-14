@@ -19,7 +19,9 @@ const reviewsRoute = require('./Routes/reviews');
 const appointmentsRoute = require('./Routes/appointments');
 const paymentsRoute = require('./Routes/payments');
 const messagesRoute = require('./Routes/messages');
+const adminRoute = require('./Routes/admin');
 
+app.use('/admin',adminRoute);
 app.use('/user', userRoute.route);
 app.use('/provider', serviceRoute.route);
 app.use('/review',reviewsRoute)
@@ -37,7 +39,6 @@ io.on('connection', (socket) => {
         recipientId = data.recipientId;
         message = data.message;
         userType = data.userType;
-        session = data.session;
 
         if(userType === 'user'){
             recipientSocketId = await userRoute.getUserSocket(recipientId);

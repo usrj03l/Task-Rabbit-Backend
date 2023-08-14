@@ -89,7 +89,8 @@ router
             socketId: '',
             orgName,
             approval: false,
-            userType: 'provider'
+            userType: 'provider',
+            disabled:false
         }).save();
         res.status(200).json({ message: 'Form submitted successfully' });
     })
