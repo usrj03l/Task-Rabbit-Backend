@@ -46,14 +46,14 @@ router
         const doc = await User.findOne({ uid: uid });
         doc.disabled = !doc.disabled;
         doc.save();
-        res.send('success');
+        res.json('success');
     })
     .put('/provider', async (req, res) => {
         const uid = req.body.uid;
         const doc = await Service.findOne({ uid: uid });
         doc.disabled = !doc.disabled;
         doc.save();
-        res.send('success');
+        res.json('success');
     })
 
 module.exports = router;
