@@ -26,7 +26,7 @@ router
         }
     })
     .get('/search', async (req, res) => {
-        const { q, city, serviceType } = req.query;
+        const { q, state, serviceType } = req.query;
         const pipeline = [];
 
         if (q) {
@@ -42,11 +42,12 @@ router
             });
         }
 
-        if (city) {
-            const regex = new RegExp(city, 'i')
+        if (state) {
+            console.log(state);
+            const regex = new RegExp(state, 'i')
             pipeline.push({
                 $match: {
-                    city: regex
+                    state: regex
                 }
             });
         }
