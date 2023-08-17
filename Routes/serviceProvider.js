@@ -36,7 +36,8 @@ router
                     $or: [
                         { orgName: regex },
                         { fname: regex },
-                        { lname: regex }
+                        { lname: regex },
+                        { city: regex }
                     ]
                 }
             });
@@ -144,9 +145,9 @@ router
     })
     .post('/profilePic', upload.single('image'), async (req, res) => {
         const { uid } = req.body;
-        const newProfilePic = req.file.path;
+        const newProfilePic = req.file.path.split('\\').pop();
         const doc = await Service.findOneAndUpdate({ uid: uid }, { profilePic: newProfilePic }, { returnDocument: 'after' });
-        res.json(doc.profilePic.split('\\').pop());
+        res.json(doc.profilePic);
     })
     .post('/setBio', async (req, res) => {
         const { bio, uid } = req.body;
