@@ -19,9 +19,9 @@ router
         const data = req.body;
         data.userType = 'user';
         data.disabled = false;
-        await new User(data)
-            .save();
-        return res.json('200');
+        const doc = new User(data);
+            doc.save();
+        return res.send(doc.toObject({getters:true}));
     })
     .post('/setSocket', async (req, res) => {
         const uid = req.body.id

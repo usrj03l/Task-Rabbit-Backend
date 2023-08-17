@@ -73,10 +73,10 @@ router
         const providers = req.body.users;
         res.send(await Service.find({ uid: providers }));
     })
-    .post('/add', upload.single('image'), (req, res) => {
+    .post('/add', upload.single('image'), async (req, res) => {
         const { fname, lname, email, phone, pan, aadhar, city, state, uid, serviceType, orgName } = req.body;
         const imageFile = req.file.path;
-        new Service({
+        const doc = new Service({
             fname,
             lname,
             email,
@@ -93,8 +93,10 @@ router
             approval: false,
             userType: 'provider',
             disabled:false
-        }).save();
-        res.status(200).json({ message: 'Form submitted successfully' });
+        })
+        await doc.save();
+        // res.status(200).json({ message: 'Form submitted successfully' });
+        res.send(doc.toObject({getters:true}));
     })
     .post('/editProfile', async (req, res) => {
         const id = req.body.id;
