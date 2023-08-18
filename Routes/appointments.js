@@ -78,9 +78,10 @@ router
         const uid = req.body.id;
         const updateObj = req.body.data;
         const userUid = req.body.userUid;
+        const docId = req.body.docId;
 
         const existingAppointment = await Appointment.findOne({ uid: uid });
-        const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userUid);
+        const userIndex = existingAppointment.userDetails.findIndex(entry => entry._id.equals(docId));
 
         if (Object.keys(updateObj)[0] === 'booked') {
             existingAppointment.userDetails[userIndex].booked = Object.values(updateObj)[0];
@@ -92,6 +93,6 @@ router
             existingAppointment.userDetails[userIndex].completed = Object.values(updateObj)[0];
         }
         existingAppointment.save();
-    })
+    });
 
 module.exports = router
