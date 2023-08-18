@@ -6,6 +6,7 @@ const paymentSchema = new mongoose.Schema({
     bill: [
         {
             userUid: String,
+            transactionId:String,
             name: String,
             address: String,
             phone: Number,

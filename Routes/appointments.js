@@ -22,7 +22,7 @@ router
                                 $filter: {
                                     input: '$userDetails',
                                     as: 'userDetail',
-                                    cond: { $eq: ['$$userDetail.userUid', userUid] } 
+                                    cond: { $eq: ['$$userDetail.userUid', userUid] }
                                 }
                             }
                         }
@@ -56,16 +56,21 @@ router
             const existingAppointment = await Appointment.findOne({ uid: uid }).orFail();
             const userIndex = existingAppointment.userDetails.findIndex(entry => entry.userUid === userInfo.userUid);
 
-            if (userIndex === -1 || existingAppointment.userDetails[userIndex].completed) {
+            if (userIndex === -1) {
                 existingAppointment.userDetails.push(userInfo);
                 existingAppointment.save();
                 return res.status(200).json('success');
-            }else{
+            }
+
+            if (existingAppointment.userDetails[userIndex].completed || existingAppointment.userDetails[userIndex].cancelled) {
+                existingAppointment.userDetails[userIndex] = userInfo;
+                existingAppointment.save();
+                return res.status(200).json('success');
+            } else {
                 return res.status(200).json('pending');
             }
 
         } catch (error) {
-
             new Appointment({
                 uid: uid,
                 providerName: providerName,
@@ -77,7 +82,6 @@ router
     .post('/editAppointment', async (req, res) => {
         const uid = req.body.id;
         const updateObj = req.body.data;
-        const userUid = req.body.userUid;
         const docId = req.body.docId;
 
         const existingAppointment = await Appointment.findOne({ uid: uid });
@@ -85,12 +89,14 @@ router
 
         if (Object.keys(updateObj)[0] === 'booked') {
             existingAppointment.userDetails[userIndex].booked = Object.values(updateObj)[0];
-        } 
-        if(Object.keys(updateObj)[0] === 'cancelled'){
-            existingAppointment.userDetails[userIndex].cancelled = Object.values(updateObj)[0];
         }
-        if(Object.keys(updateObj)[0] === 'completed'){
+        if (Object.keys(updateObj)[0] === 'cancelled') {
+            existingAppointment.userDetails[userIndex].cancelled = Object.values(updateObj)[0];
+            existingAppointment.userDetails[userIndex].booked = false;
+        }
+        if (Object.keys(updateObj)[0] === 'completed') {
             existingAppointment.userDetails[userIndex].completed = Object.values(updateObj)[0];
+            existingAppointment.userDetails[userIndex].booked = false;
         }
         existingAppointment.save();
     });

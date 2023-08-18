@@ -51,7 +51,6 @@ router
         const billData = req.body.generatedBill;
         try {
             const existingBill = await Payment.findOne({ providerUid: providerData.uid }).orFail();
-            const billIndex = existingBill.bill.findIndex(entry => entry.userUid === billData.userUid);
             existingBill.bill.push(billData);
             existingBill.save();
             return res.status(200).json('success');
