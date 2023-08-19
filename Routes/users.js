@@ -20,8 +20,8 @@ router
         data.userType = 'user';
         data.disabled = false;
         const doc = new User(data);
-            doc.save();
-        return res.send(doc.toObject({getters:true}));
+        doc.save();
+        return res.send(doc.toObject({ getters: true }));
     })
     .post('/setSocket', async (req, res) => {
         const uid = req.body.id
@@ -60,6 +60,17 @@ router
             }).save();
             res.status(200).json('success');
         }
+    })
+    .put('/editProfile', async (req, res) => {
+        const uid = req.body.id;
+        const filteredData = Object.fromEntries(
+            Object.entries(req.body.formData).filter(([key, value]) => {
+                return value !== null && value !== '';
+            })
+        );
+        const updateObject = { $set: filteredData }
+        await User.findOneAndUpdate({ uid: uid }, updateObject,{new:true});
+        res.status(200);
     });
 
 async function getUserSocket(uid) {
